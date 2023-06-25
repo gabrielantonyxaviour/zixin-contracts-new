@@ -102,7 +102,7 @@ const networks = {
     gasPrice: undefined,
     accounts: PRIVATE_KEY !== undefined ? [PRIVATE_KEY] : [],
     verifyApiKey: process.env.ETHERSCAN_API_KEY || "UNSET",
-    chainId: 5001,
+    chainId: 5,
     confirmations: 2 * DEFAULT_VERIFICATION_BLOCK_CONFIRMATIONS,
     nativeCurrencySymbol: "ETH",
     functionsPublicKey: SHARED_DON_PUBLIC_KEY,
