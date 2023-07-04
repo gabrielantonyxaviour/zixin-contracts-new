@@ -24,7 +24,7 @@ contract ZixinGeneral is ERC721, ERC721URIStorage, IDapp, Ownable {
 
   // Zixin Variables
   Counters.Counter private _tokenIds;
-
+  mapping(address => uint256[]) public userToTokenIds;
   // Events
   event ZixinMinted(uint256 zixinId, uint256 tokenId, address claimer, string metadataUrl, uint256 timestamp);
 
@@ -75,10 +75,11 @@ contract ZixinGeneral is ERC721, ERC721URIStorage, IDapp, Ownable {
       uint256 _tokenId = _tokenIds.current();
       _safeMint(toAddress(transferParams.recipient), _tokenId);
       _setTokenURI(_tokenId, bytesToString(transferParams.metadataUrls[i]));
+      userToTokenIds[toAddress(transferParams.recipient)].push(_tokenId);
       emit ZixinMinted(
         transferParams.zixinIds[i],
         _tokenIds.current(),
-        msg.sender,
+        toAddress(transferParams.recipient),
         bytesToString(transferParams.metadataUrls[i]),
         block.timestamp
       );

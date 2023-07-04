@@ -20,20 +20,6 @@ if (!isTestEnvironment && !PRIVATE_KEY) {
 }
 
 const networks = {
-  ethereumSepolia: {
-    url: process.env.ETHEREUM_SEPOLIA_RPC_URL || "UNSET",
-    gasPrice: undefined,
-    accounts: PRIVATE_KEY !== undefined ? [PRIVATE_KEY] : [],
-    verifyApiKey: process.env.ETHERSCAN_API_KEY || "UNSET",
-    chainId: 11155111,
-    confirmations: DEFAULT_VERIFICATION_BLOCK_CONFIRMATIONS,
-    nativeCurrencySymbol: "ETH",
-    linkToken: "0x779877A7B0D9E8603169DdbD7836e478b4624789",
-    linkPriceFeed: "0x42585eD362B3f1BCa95c640FdFf35Ef899212734",
-    functionsOracleProxy: "0x649a2C205BE7A3d5e99206CEEFF30c794f0E31EC",
-    functionsBillingRegistryProxy: "0x3c79f56407DCB9dc9b852D139a317246f43750Cc",
-    functionsPublicKey: SHARED_DON_PUBLIC_KEY,
-  },
   polygonMumbai: {
     url: process.env.POLYGON_MUMBAI_RPC_URL || "UNSET",
     gasPrice: undefined,
@@ -49,7 +35,7 @@ const networks = {
     functionsPublicKey: SHARED_DON_PUBLIC_KEY,
     gateWayAddress: "0x94caA85bC578C05B22BDb00E6Ae1A34878f047F7",
   },
-  avalancheFuji: {
+  avalancheFujiTestnet: {
     url: process.env.AVALANCHE_FUJI_RPC_URL || "UNSET",
     gasPrice: undefined,
     accounts: PRIVATE_KEY !== undefined ? [PRIVATE_KEY] : [],
@@ -109,7 +95,7 @@ const networks = {
     gateWayAddress: "0x94caA85bC578C05B22BDb00E6Ae1A34878f047F7",
   },
 
-  scrollTestnet: {
+  scroll: {
     url: process.env.SCROLL_TESTNET_RPC_URL || "UNSET",
     gasPrice: undefined,
     accounts: PRIVATE_KEY !== undefined ? [PRIVATE_KEY] : [],

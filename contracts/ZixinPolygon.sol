@@ -33,6 +33,7 @@ contract ZixinPolygon is ERC721, ERC721URIStorage, IDapp, FunctionsClient, Confi
   Counters.Counter private _tokenIds;
   mapping(uint256 => string) public zixinToSourceCode;
   mapping(uint256 => mapping(address => uint256)) public zixinToTokenId;
+  mapping(address => uint256[]) public userToTokenIds;
 
   // Chainlink Variables
   mapping(bytes32 => ZixinClaimRequest) public requestRegistry;
@@ -105,7 +106,8 @@ contract ZixinPolygon is ERC721, ERC721URIStorage, IDapp, FunctionsClient, Confi
           _safeMint(requestRegistry[requestId].claimer, _tokenId);
           _setTokenURI(_tokenId, metadataUrl);
           _tokenIds.increment();
-          zixinToTokenId[requestRegistry[requestId].zixinId][msg.sender] = _tokenId;
+          zixinToTokenId[requestRegistry[requestId].zixinId][requestRegistry[requestId].claimer] = _tokenId;
+          userToTokenIds[requestRegistry[requestId].claimer].push(_tokenId);
           emit ZixinClaimed(
             requestId,
             requestRegistry[requestId].zixinId,
