@@ -23,7 +23,14 @@ console.log(profileResponse)
 
 if (profileResponse.error) {
   throw Error(profileResponse.error)
+} else {
+  const followers = profileResponse.data.followers
+
+  if (followers < 10) {
+    return Functions.encodeString("Not enough followers to earn this Shiji")
+  }
 }
+
 const editImageRequest = Functions.makeHttpRequest({
   url: `https://rest.apitemplate.io/v2/create-image`,
   method: "POST",
@@ -38,7 +45,7 @@ const editImageRequest = Functions.makeHttpRequest({
       {
         name: "background-image",
         stroke: "grey",
-        src: profileResponse.data.avatar_url,
+        src: "https://www.pngitem.com/pimgs/m/79-794894_bouncer-github-octocat-hd-png-download.png",
       },
       {
         name: "text_quote",
@@ -48,7 +55,7 @@ const editImageRequest = Functions.makeHttpRequest({
       },
       {
         name: "text_tags",
-        text: "Github | Zixin",
+        text: "Github | Mr. Popular | Shiji",
         fontSize: 55,
         textBackgroundColor: "rgba(0, 0, 0)",
       },
@@ -65,8 +72,8 @@ if (!editImageResponse.error) {
 }
 
 const metadata = {
-  name: "Zixin | Github |" + profileResponse.data.login,
-  description: profileResponse.data.bio,
+  name: "Shiji | Github |" + profileResponse.data.login,
+  description: "A soulbound NFT that represents that this user has more than 10 Github Followers",
   image: editImageResponse.data.download_url_png,
   externalLink: profileResponse.data.blog,
   attributes: [

@@ -2,19 +2,16 @@ if (!secrets.accessToken) {
   throw Error("Need to set ACCESS_TOKEN environment variable")
 }
 console.log(secrets.accessToken)
-const emailRequest = Functions.makeHttpRequest({
-  url: "https://www.googleapis.com/userinfo/v2/me",
+const profileRequest = Functions.makeHttpRequest({
+  url: `https://graph.facebook.com/me?fields=id,name,picture&access_token=${secrets.accessToken}`,
   method: "GET",
-  headers: {
-    Authorization: `Bearer ${secrets.accessToken}`,
-  },
 })
 
-const [profileResponse] = await Promise.all([emailRequest])
-console.log(profileResponse)
+const [profileResponse] = await Promise.all([profileRequest])
+console.log(profileResponse.data)
 if (!profileResponse.error) {
 } else {
-  throw Error("Error getting email")
+  throw Error("Error getting profile")
 }
 
 const editImageRequest = Functions.makeHttpRequest({
@@ -31,17 +28,17 @@ const editImageRequest = Functions.makeHttpRequest({
       {
         name: "background-image",
         stroke: "grey",
-        src: profileResponse.data.picture,
+        src: profileResponse.data.picture.data.url,
       },
       {
         name: "text_quote",
-        text: profileResponse.data.given_name + " | " + profileResponse.data.email,
+        text: profileResponse.data.name,
         fontSize: 60,
         textBackgroundColor: "rgba(0,0,0)",
       },
       {
         name: "text_tags",
-        text: "Google | Zixin",
+        text: "Facebook | Zixin",
         fontSize: 55,
         textBackgroundColor: "rgba(0, 0, 0)",
       },
@@ -58,25 +55,12 @@ if (!editImageResponse.error) {
 }
 
 const metadata = {
-  name: "Zixin | Google |" + profileResponse.data.name,
-  description: "A souldbound NFT that represents the ownership of Google account " + profileResponse.data.email,
-  image: editImageResponse.data.picture,
+  name: "Zixin | Facebook |" + profileResponse.data.name,
+  description: "A souldbound NFT that represents the ownership of Facebook account of " + profileResponse.data.name,
   attributes: [
     {
       trait_type: "id",
       value: profileResponse.data.id,
-    },
-    {
-      trait_type: "locale",
-      value: profileResponse.data.locale,
-    },
-    {
-      trait_type: "Given Name",
-      value: profileResponse.data.given_name,
-    },
-    {
-      trait_type: "Family Name",
-      value: profileResponse.data.family_name,
     },
   ],
 }
