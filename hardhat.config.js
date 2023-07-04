@@ -56,13 +56,13 @@ module.exports = {
     // npx hardhat verify --network <NETWORK> <CONTRACT_ADDRESS> <CONSTRUCTOR_PARAMETERS>
     // to get exact network names: npx hardhat verify --list-networks
     apiKey: {
-      goerli: ETHERSCAN_API_KEY,
-      arbitrumGoerli: ARBISCAN_API_KEY,
-      polygonMumbai: POLYGONSCAN_API_KEY,
-      scroll: ETHERSCAN_API_KEY,
-      mantleTestnet: ETHERSCAN_API_KEY,
-      baseTestnet: ETHERSCAN_API_KEY,
-      avalancheFujiTestnet: SNOWTACE_API_KEY,
+      goerli: process.env.ETHERSCAN_API_KEY,
+      arbitrumGoerli: Aprocess.env.RBISCAN_API_KEY,
+      polygonMumbai: process.env.POLYGONSCAN_API_KEY,
+      scroll: process.env.ETHERSCAN_API_KEY,
+      mantleTestnet: process.env.ETHERSCAN_API_KEY,
+      baseTestnet: process.env.ETHERSCAN_API_KEY,
+      avalancheFujiTestnet: process.env.SNOWTACE_API_KEY,
     },
     customChains: [
       {
