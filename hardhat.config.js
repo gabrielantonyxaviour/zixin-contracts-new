@@ -57,7 +57,7 @@ module.exports = {
     // to get exact network names: npx hardhat verify --list-networks
     apiKey: {
       goerli: process.env.ETHERSCAN_API_KEY,
-      arbitrumGoerli: Aprocess.env.RBISCAN_API_KEY,
+      arbitrumGoerli: process.env.ARBISCAN_API_KEY,
       polygonMumbai: process.env.POLYGONSCAN_API_KEY,
       scroll: process.env.ETHERSCAN_API_KEY,
       mantleTestnet: process.env.ETHERSCAN_API_KEY,

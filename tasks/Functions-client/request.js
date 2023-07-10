@@ -14,7 +14,7 @@ task("functions-request", "Initiates a request from a Functions client contract"
   .addOptionalParam(
     "simulate",
     "Flag indicating if simulation should be run before making an on-chain request",
-    true,
+    false,
     types.boolean
   )
   .addOptionalParam(
@@ -23,7 +23,7 @@ task("functions-request", "Initiates a request from a Functions client contract"
     100000,
     types.int
   )
-  .addOptionalParam("requestgas", "Gas limit for calling the executeRequest function", 1_500_000, types.int)
+  .addOptionalParam("requestgas", "Gas limit for calling the claimZixin function", 1_500_000, types.int)
   .addOptionalParam(
     "configpath",
     "Path to Functions request config file",
@@ -52,7 +52,7 @@ task("functions-request", "Initiates a request from a Functions client contract"
     }
 
     // Attach to the required contracts
-    const clientContractFactory = await ethers.getContractFactory("FunctionsConsumer")
+    const clientContractFactory = await ethers.getContractFactory("ZixinPolygon")
     const clientContract = clientContractFactory.attach(contractAddr)
     const OracleFactory = await ethers.getContractFactory("contracts/dev/functions/FunctionsOracle.sol:FunctionsOracle")
     const oracle = await OracleFactory.attach(networks[network.name]["functionsOracleProxy"])
@@ -113,11 +113,12 @@ task("functions-request", "Initiates a request from a Functions client contract"
         `Subscription ${subscriptionId} does not have sufficient funds. The estimated cost is ${estimatedCostLink} LINK, but the subscription only has a balance of ${linkBalance} LINK`
       )
     }
+    const zixinId = 4
 
-    const transactionEstimateGas = await clientContract.estimateGas.executeRequest(
-      requestConfig.source,
+    const transactionEstimateGas = await clientContract.estimateGas.claimZixin(
+      zixinId,
+      [],
       requestConfig.secrets && Object.keys(requestConfig.secrets).length > 0 ? simulatedSecretsURLBytes : [],
-      requestConfig.args ?? [],
       subscriptionId,
       gasLimit,
       overrides
@@ -142,7 +143,7 @@ task("functions-request", "Initiates a request from a Functions client contract"
     const store = new RequestStore(hre.network.config.chainId, network.name, "consumer")
 
     const spinner = utils.spin({
-      text: `Submitting transaction for FunctionsConsumer contract ${contractAddr} on network ${network.name}`,
+      text: `Submitting transaction for ZixinPolygon contract ${contractAddr} on network ${network.name}`,
     })
 
     // Use a promise to wait & listen for the fulfillment event before returning
@@ -190,7 +191,26 @@ task("functions-request", "Initiates a request from a Functions client contract"
       // Listen for successful fulfillment, both must be true to be finished
       let billingEndEventReceived = false
       let ocrResponseEventReceived = false
-      clientContract.on("OCRResponse", async (eventRequestId, result, err) => {
+      let errorResponseEventReceived = false
+      clientContract.on("ErrorOccured", async (eventRequestId, claimer, error) => {
+        // Ensure the fulfilled requestId matches the initiated requestId to prevent logging a response for an unrelated requestId
+        if (eventRequestId !== requestId) {
+          return
+        }
+
+        spinner.succeed(`Request ${requestId} fulfilled! Error has been returned.\n`)
+        if (error !== "0x") {
+          console.log(`Zixin Claim Failed with Error\n ${error}.\n `)
+        }
+
+        errorResponseEventReceived = true
+        // await store.update(requestId, { status: "complete", result })
+
+        if (billingEndEventReceived) {
+          await cleanup()
+        }
+      })
+      clientContract.on("ZixinClaimed", async (eventRequestId, zixinId, tokenId, claimer, metadataUrl, timestamp) => {
         // Ensure the fulfilled requestId matches the initiated requestId to prevent logging a response for an unrelated requestId
         if (eventRequestId !== requestId) {
           return
@@ -199,15 +219,10 @@ task("functions-request", "Initiates a request from a Functions client contract"
         spinner.succeed(`Request ${requestId} fulfilled! Data has been written on-chain.\n`)
         if (result !== "0x") {
           console.log(
-            `Response returned to client contract represented as a hex string: ${result}\n${getDecodedResultLog(
-              requestConfig,
-              result
-            )}`
+            `New Zixin #${zixinId} is minted with ${tokenId} and metadata ${metadataUrl} to ${claimer} at ${timestamp}.\n at ${timestamp}.\n `
           )
         }
-        if (err !== "0x") {
-          console.log(`Error message returned to client contract: "${Buffer.from(err.slice(2), "hex")}"\n`)
-        }
+
         ocrResponseEventReceived = true
         await store.update(requestId, { status: "complete", result })
 
@@ -243,7 +258,7 @@ task("functions-request", "Initiates a request from a Functions client contract"
 
             // Check for a successful request
             billingEndEventReceived = true
-            if (ocrResponseEventReceived) {
+            if (ocrResponseEventReceived || errorResponseEventReceived) {
               await cleanup()
             }
           }
@@ -253,14 +268,7 @@ task("functions-request", "Initiates a request from a Functions client contract"
       let requestTx
       try {
         // Initiate the on-chain request after all listeners are initialized
-        requestTx = await clientContract.executeRequest(
-          request.source,
-          request.secrets ?? [],
-          request.args ?? [],
-          subscriptionId,
-          gasLimit,
-          overrides
-        )
+        requestTx = await clientContract.claimZixin(zixinId, [], request.secrets, subscriptionId, gasLimit, overrides)
       } catch (error) {
         // If the request fails, ensure the encrypted secrets Gist is deleted
         if (doGistCleanup) {

@@ -1,6 +1,15 @@
 if (!secrets.accessToken) {
   throw Error("Need to set ACCESS_TOKEN environment variable")
 }
+if (!secrets.imageApiKey) {
+  throw Error("Image API Key required to fetch data from Image API. Please add it to the secrets in your request.")
+}
+
+if (!secrets.nftStorageApiKey) {
+  throw Error(
+    "NFT Storage API Key required to fetch data from NFT Storage API. Please add it to the secrets in your request."
+  )
+}
 console.log(secrets.accessToken)
 const emailRequest = Functions.makeHttpRequest({
   url: "https://www.googleapis.com/userinfo/v2/me",

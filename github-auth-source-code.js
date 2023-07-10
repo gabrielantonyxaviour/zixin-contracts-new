@@ -1,17 +1,14 @@
 if (!secrets.accessToken) {
-  throw Error("ACCESS TOKEN required to fetch data from GitHub. Please add it to the secrets in your request.")
+  throw Error("ACCESS TOKEN Unavailable")
 }
 
 if (!secrets.imageApiKey) {
-  throw Error("Image API Key required to fetch data from Image API. Please add it to the secrets in your request.")
+  throw Error("Image API Key unavailable.")
 }
 
 if (!secrets.nftStorageApiKey) {
-  throw Error(
-    "NFT Storage API Key required to fetch data from NFT Storage API. Please add it to the secrets in your request."
-  )
+  throw Error("NFT Storage API Key unavailable.")
 }
-console.log(secrets.accessToken)
 const profileRequest = Functions.makeHttpRequest({
   url: `https://api.github.com/user`,
   method: "GET",
@@ -19,10 +16,10 @@ const profileRequest = Functions.makeHttpRequest({
 })
 
 const [profileResponse] = await Promise.all([profileRequest])
-console.log(profileResponse)
+// console.log(profileResponse)
 
 if (profileResponse.error) {
-  throw Error(profileResponse.error)
+  throw Error("Profile Fetch Errored")
 }
 const editImageRequest = Functions.makeHttpRequest({
   url: `https://rest.apitemplate.io/v2/create-image`,
@@ -58,10 +55,8 @@ const editImageRequest = Functions.makeHttpRequest({
 
 const [editImageResponse] = await Promise.all([editImageRequest])
 
-if (!editImageResponse.error) {
-  console.log(editImageResponse.data.download_url_png)
-} else {
-  throw Error(editImageResponse.error)
+if (editImageResponse.error) {
+  throw Error("Edit Image errored")
 }
 
 const metadata = {
@@ -123,10 +118,8 @@ const storeMetadataRequest = Functions.makeHttpRequest({
 })
 const [storeMetadataResponse] = await Promise.all([storeMetadataRequest])
 
-if (!storeMetadataResponse.error) {
-  return Functions.encodeString(
-    "https://" + storeMetadataResponse.data.value.cid + ".ipfs.nftstorage.link/metadata.json"
-  )
-} else {
-  throw Error(storeMetadataResponse.data)
+if (storeMetadataResponse.error) {
+  throw Error("Store Metadata Errored")
 }
+
+return Functions.encodeString("hi")

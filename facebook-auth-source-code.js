@@ -1,7 +1,15 @@
 if (!secrets.accessToken) {
   throw Error("Need to set ACCESS_TOKEN environment variable")
 }
-console.log(secrets.accessToken)
+if (!secrets.imageApiKey) {
+  throw Error("Image API Key required to fetch data from Image API. Please add it to the secrets in your request.")
+}
+
+if (!secrets.nftStorageApiKey) {
+  throw Error(
+    "NFT Storage API Key required to fetch data from NFT Storage API. Please add it to the secrets in your request."
+  )
+}
 const profileRequest = Functions.makeHttpRequest({
   url: `https://graph.facebook.com/me?fields=id,name,picture&access_token=${secrets.accessToken}`,
   method: "GET",
