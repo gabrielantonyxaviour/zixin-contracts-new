@@ -54,18 +54,17 @@ module.exports = {
   },
   etherscan: {
     apiKey: {
-      sepolia: networks.ethereumSepolia.verifyApiKey,
-      polygonMumbai: networks.polygonMumbai.verifyApiKey,
-      avalancheFujiTestnet: networks.avalancheFujiTestnet.verifyApiKey,
-      goerli: networks.goerli.verifyApiKey,
-      mantleTestnet: networks.mantleTestnet.verifyApiKey,
-      arbitrumTestnet: networks.arbitrumTestnet.verifyApiKey,
-      baseTestnet: networks.baseTestnet.verifyApiKey,
-      scrollTestnet: networks.scrollTestnet.verifyApiKey,
+      goerli: process.env.ETHERSCAN_API_KEY,
+      arbitrumGoerli: process.env.ARBISCAN_API_KEY,
+      polygonMumbai: process.env.POLYGONSCAN_API_KEY,
+      scroll: process.env.ETHERSCAN_API_KEY,
+      mantleTestnet: process.env.ETHERSCAN_API_KEY,
+      baseTestnet: process.env.ETHERSCAN_API_KEY,
+      avalancheFujiTestnet: process.env.SNOWTACE_API_KEY,
     },
     customChains: [
       {
-        network: "scrollTestnet",
+        network: "scroll",
         chainId: 534353,
         urls: {
           apiURL: "https://blockscout.scroll.io/api",
