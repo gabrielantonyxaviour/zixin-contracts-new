@@ -113,7 +113,7 @@ task("functions-request", "Initiates a request from a Functions client contract"
         `Subscription ${subscriptionId} does not have sufficient funds. The estimated cost is ${estimatedCostLink} LINK, but the subscription only has a balance of ${linkBalance} LINK`
       )
     }
-    const zixinId = 4
+    const zixinId = 0
 
     const transactionEstimateGas = await clientContract.estimateGas.claimZixin(
       zixinId,
@@ -267,6 +267,8 @@ task("functions-request", "Initiates a request from a Functions client contract"
 
       let requestTx
       try {
+        console.log("Request!!!")
+        console.log(request)
         // Initiate the on-chain request after all listeners are initialized
         requestTx = await clientContract.claimZixin(zixinId, [], request.secrets, subscriptionId, gasLimit, overrides)
       } catch (error) {

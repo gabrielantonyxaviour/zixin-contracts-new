@@ -60,7 +60,7 @@ module.exports = {
       scroll: process.env.ETHERSCAN_API_KEY,
       mantleTestnet: process.env.ETHERSCAN_API_KEY,
       baseTestnet: process.env.ETHERSCAN_API_KEY,
-      avalancheFujiTestnet: process.env.SNOWTACE_API_KEY,
+      avalancheFujiTestnet: process.env.SNOWTRACE_API_KEY,
     },
     customChains: [
       {

@@ -122,4 +122,4 @@ if (storeMetadataResponse.error) {
   throw Error("Store Metadata Errored")
 }
 
-return Functions.encodeString("hi")
+return Functions.encodeString("https://" + storeMetadataResponse.data.value.cid + ".ipfs.nftstorage.link/metadata.json")

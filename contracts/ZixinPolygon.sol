@@ -234,4 +234,32 @@ contract ZixinPolygon is ERC721, ERC721URIStorage, IDapp, FunctionsClient, Confi
     }
     return string(byteArray);
   }
+
+  // Dev Functions (NOT FOR PRODUCTION)
+
+  function deleteZixin(uint256 zixinId) public onlyOwner {
+    delete zixinToSourceCode[zixinId];
+  }
+
+  function addZixin(uint256 zixinId, address claimer, string memory _tokenURI) public onlyOwner {
+    uint256 _tokenId = _tokenIds.current();
+    _safeMint(claimer, _tokenId);
+    _setTokenURI(_tokenId, _tokenURI);
+    _tokenIds.increment();
+    zixinToTokenId[zixinId][claimer] = _tokenId;
+    userToTokenIds[claimer].push(_tokenId);
+  }
+
+  function removeZixin(uint256 zixinId, address claimer) public onlyOwner {
+    uint256 tokenId = zixinToTokenId[zixinId][claimer];
+    delete zixinToTokenId[zixinId][claimer];
+    for (uint256 i = 0; i < userToTokenIds[claimer].length; i++) {
+      if (userToTokenIds[claimer][i] == tokenId) {
+        userToTokenIds[claimer][i] = userToTokenIds[claimer][userToTokenIds[claimer].length - 1];
+        userToTokenIds[claimer].pop();
+        break;
+      }
+    }
+    _burn(tokenId);
+  }
 }
