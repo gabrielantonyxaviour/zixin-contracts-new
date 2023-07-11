@@ -49,7 +49,7 @@ const networks = {
     functionsPublicKey: SHARED_DON_PUBLIC_KEY,
     gateWayAddress: "0x94caA85bC578C05B22BDb00E6Ae1A34878f047F7",
   },
-  avalancheFuji: {
+  avalancheFujiTestnet: {
     url: process.env.AVALANCHE_FUJI_RPC_URL || "UNSET",
     gasPrice: undefined,
     accounts: PRIVATE_KEY !== undefined ? [PRIVATE_KEY] : [],

@@ -53,13 +53,42 @@ module.exports = {
     ...networks,
   },
   etherscan: {
-    // npx hardhat verify --network <NETWORK> <CONTRACT_ADDRESS> <CONSTRUCTOR_PARAMETERS>
-    // to get exact network names: npx hardhat verify --list-networks
     apiKey: {
       sepolia: networks.ethereumSepolia.verifyApiKey,
       polygonMumbai: networks.polygonMumbai.verifyApiKey,
-      avalancheFujiTestnet: networks.avalancheFuji.verifyApiKey,
+      avalancheFujiTestnet: networks.avalancheFujiTestnet.verifyApiKey,
+      goerli: networks.goerli.verifyApiKey,
+      mantleTestnet: networks.mantleTestnet.verifyApiKey,
+      arbitrumTestnet: networks.arbitrumTestnet.verifyApiKey,
+      baseTestnet: networks.baseTestnet.verifyApiKey,
+      scrollTestnet: networks.scrollTestnet.verifyApiKey,
     },
+    customChains: [
+      {
+        network: "scrollTestnet",
+        chainId: 534353,
+        urls: {
+          apiURL: "https://blockscout.scroll.io/api",
+          browserURL: "https://blockscout.scroll.io/",
+        },
+      },
+      {
+        network: "mantleTestnet",
+        chainId: 5001,
+        urls: {
+          apiURL: "https://explorer.testnet.mantle.xyz/api",
+          browserURL: "https://explorer.testnet.mantle.xyz/",
+        },
+      },
+      {
+        network: "baseTestnet",
+        chainId: 84531,
+        urls: {
+          apiURL: "https://goerli.basescan.org/api",
+          browserURL: "https://goerli.basescan.org/",
+        },
+      },
+    ],
   },
   gasReporter: {
     enabled: REPORT_GAS,

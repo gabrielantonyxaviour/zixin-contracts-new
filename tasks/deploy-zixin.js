@@ -29,6 +29,7 @@ task("functions-deploy-zixin", "Deploys the Zixin Contracts")
       )
       await zixinPolygon.deployTransaction.wait(networks[network.name].confirmations)
       const verifyContract = taskArgs.verify
+      console.log(`\Zixin deployed to ${zixinPolygon.address} on ${network.name}`)
 
       if (verifyContract && !!networks[network.name].verifyApiKey && networks[network.name].verifyApiKey !== "UNSET") {
         try {
@@ -56,7 +57,6 @@ task("functions-deploy-zixin", "Deploys the Zixin Contracts")
           "\nPOLYGONSCAN_API_KEY, ETHERSCAN_API_KEY or SNOWTRACE_API_KEY is missing. Skipping contract verification..."
         )
       }
-      console.log(`\Zixin deployed to ${zixinPolygon.address} on ${network.name}`)
     } else {
       const zixinContractFactory = await ethers.getContractFactory("ZixinGeneral")
       const zixinGeneral = await zixinContractFactory.deploy(
@@ -72,6 +72,7 @@ task("functions-deploy-zixin", "Deploys the Zixin Contracts")
       )
       await zixinGeneral.deployTransaction.wait(networks[network.name].confirmations)
       const verifyContract = taskArgs.verify
+      console.log(`\Zixin deployed to ${zixinGeneral.address} on ${network.name}`)
 
       if (verifyContract && !!networks[network.name].verifyApiKey && networks[network.name].verifyApiKey !== "UNSET") {
         try {
@@ -100,6 +101,5 @@ task("functions-deploy-zixin", "Deploys the Zixin Contracts")
           "\nPOLYGONSCAN_API_KEY, ETHERSCAN_API_KEY or SNOWTRACE_API_KEY is missing. Skipping contract verification..."
         )
       }
-      console.log(`\Zixin deployed to ${zixinGeneral.address} on ${network.name}`)
     }
   })
